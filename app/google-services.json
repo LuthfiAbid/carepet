@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1079386289801",
+    "firebase_url": "https://talaravel-591d8.firebaseio.com",
+    "project_id": "talaravel-591d8",
+    "storage_bucket": "talaravel-591d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079386289801:android:a219c1b67afc2595baf858",
+        "android_client_info": {
+          "package_name": "com.abid.carepet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079386289801-h6pp74fl3vg60uuhia62h9i5mnvjd7p7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.abid.carepet",
+            "certificate_hash": "52019e0f8cec9db708895dc419e6213a819548d8"
+          }
+        },
+        {
+          "client_id": "1079386289801-jsruc494qapnsd4b4frgfhi1il05ehav.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCscU9f0soTSN_lq_ZvuVPmPQLDhqKMtbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079386289801-jsruc494qapnsd4b4frgfhi1il05ehav.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
