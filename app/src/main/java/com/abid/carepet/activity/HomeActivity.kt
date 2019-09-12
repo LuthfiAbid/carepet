@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.abid.carepet.R
+import com.abid.carepet.data.Pref
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.nav_header_home.*
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var fAuth: FirebaseAuth
+    lateinit var pref: Pref
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         fAuth = FirebaseAuth.getInstance()
+        pref = Pref(this)
 
         FirebaseDatabase.getInstance().getReference("dataUser/${fAuth.uid}")
             .child("name").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -110,6 +113,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_profile -> {
                 startActivity(Intent(this, ProfileActivity::class.java))
+            }
+            R.id.nav_logout -> {
+                pref.setStatus(false)
+                fAuth.signOut()
+                startActivity(
+                    Intent(
+                        this, LoginActivity::class.java
+                    )
+                )
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

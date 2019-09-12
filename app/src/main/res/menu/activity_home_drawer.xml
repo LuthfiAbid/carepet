@@ -14,17 +14,13 @@
                 android:title="Profile"/>
     </group>
 
-    <!--<item android:title="Communicate">-->
-    <!--<menu>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_share"-->
-    <!--android:icon="@drawable/ic_menu_share"-->
-    <!--android:title="@string/menu_share"/>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_send"-->
-    <!--android:icon="@drawable/ic_menu_send"-->
-    <!--android:title="@string/menu_send"/>-->
-    <!--</menu>-->
-    <!--</item>-->
+    <item android:title="Account">
+        <menu>
+            <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/ic_arrow_back_white"
+                    android:title="@string/menu_share"/>
+        </menu>
+    </item>
 
 </menu>
