@@ -2,6 +2,7 @@ package com.abid.carepet.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -9,22 +10,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.abid.carepet.R
+import com.abid.carepet.adapter.OrderAdapter
 import com.abid.carepet.data.Pref
+import com.abid.carepet.model.OrderModel
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.nav_header_home.*
+import java.util.*
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var fAuth: FirebaseAuth
     lateinit var pref: Pref
+    private var destinationAdapter: OrderAdapter? = null
+    private var recyclerView: RecyclerView? = null
+    private var list: MutableList<OrderModel> = ArrayList()
+    lateinit var dbRef: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +41,30 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         fAuth = FirebaseAuth.getInstance()
         pref = Pref(this)
+        var linearLayoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.VERTICAL, false)
+        recyclerView = findViewById(R.id.recyclerViewOrder)
+        recyclerView!!.layoutManager = linearLayoutManager
+        recyclerView!!.setHasFixedSize(true)
+        dbRef = FirebaseDatabase.getInstance().getReference("destination")
+        dbRef.orderByChild("startDate").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(data: DataSnapshot) {
+                list = ArrayList()
+                for (dataSnapshot in data.children) {
+                    val addDataAll = dataSnapshot.getValue(OrderModel::class.java)
+                    addDataAll!!.key = dataSnapshot.key
+                    list.add(addDataAll)
+                    destinationAdapter = OrderAdapter(this@HomeActivity, list)
+                    recyclerView!!.adapter = destinationAdapter
+                }
+            }
+
+
+            override fun onCancelled(p0: DatabaseError) {
+                Log.e(
+                    "TAG_ERROR", p0.message
+                )
+            }
+        })
 
         FirebaseDatabase.getInstance().getReference("dataUser/${fAuth.uid}")
             .child("name").addListenerForSingleValueEvent(object : ValueEventListener {

@@ -44,6 +44,9 @@ class CarepetActivity : AppCompatActivity() {
         firebaseStorage = FirebaseStorage.getInstance()
         storageReference = firebaseStorage.reference
         filePathImage = Uri.EMPTY
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "EDIT PROFILE"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         val startTime = findViewById<EditText>(R.id.et_time_start)
         val endTime = findViewById<EditText>(R.id.et_time_end)
         imagePet.setOnClickListener {
