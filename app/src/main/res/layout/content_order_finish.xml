@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_margin="20dp"
-        android:background="@drawable/linear_shadow"
-        android:id="@+id/llOrder"
-        android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/linear_shadow"
+              android:layout_margin="20dp"
+              android:id="@+id/llOrderFinish">
     <LinearLayout
             android:orientation="vertical"
             android:background="@drawable/linear_radius"
@@ -24,11 +23,12 @@
                         android:layout_marginStart="20dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:text="Luthfi Abid"
-                        android:id="@+id/nameProfileCarepet"
+                        android:id="@+id/nameProfileFinish"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
             </LinearLayout>
         </RelativeLayout>
+
         <LinearLayout
                 android:layout_marginHorizontal="30dp"
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
 
             <TextView
                     android:textAlignment="textEnd"
-                    android:id="@+id/startTimeText"
+                    android:id="@+id/startTimeFinish"
                     android:textColor="@android:color/black"
                     android:text="12:00"
                     android:layout_width="match_parent"
@@ -62,7 +62,7 @@
 
             <TextView
                     android:textAlignment="textEnd"
-                    android:id="@+id/endTimeText"
+                    android:id="@+id/endTimeFinish"
                     android:textColor="@android:color/black"
                     android:text="24:00"
                     android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                     android:textAlignment="textEnd"
                     android:id="@+id/tv_status_order"
                     android:textColor="@android:color/black"
-                    android:text="In Process"
+                    android:text="Finish"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
         </LinearLayout>

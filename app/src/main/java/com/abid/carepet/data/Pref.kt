@@ -7,7 +7,6 @@ class Pref {
     val USER_ID = "uidx"
     val COUNTER_ID = "counter"
     val statusLogin = "STATUS"
-    //    val statusUserSlur = "STATUS_USER"
     val dest = "DESTINATION"
 
 

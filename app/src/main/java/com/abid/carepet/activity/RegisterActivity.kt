@@ -61,5 +61,6 @@ class RegisterActivity : AppCompatActivity() {
         dbRef.child("/phone").setValue(phone)
         dbRef.child("/email").setValue(email)
         dbRef.child("/password").setValue(password)
+        dbRef.child("/status").setValue("user")
     }
 }

@@ -8,7 +8,6 @@
         android:orientation="vertical"
         tools:context=".activity.CarepetActivity">
     <androidx.appcompat.widget.Toolbar
-            android:layout_marginBottom="100dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:titleTextColor="@android:color/white"
@@ -37,9 +36,8 @@
                 android:text="Select pet image"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"/>
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
                 android:alpha="0.45"
-                android:scaleType="fitXY"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/img_placehlder"
                 android:id="@+id/imagePet"
@@ -58,6 +56,7 @@
                 android:paddingHorizontal="15dp"
                 android:layout_marginBottom="15dp"/>
         <EditText
+                android:inputType="number"
                 android:hint="Nomor Telepon"
                 android:id="@+id/et_nomor_telepon"
                 android:layout_below="@+id/et_nama_pelanggan"
@@ -76,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
             <EditText
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:hint="Start time"
                     android:id="@+id/et_time_start"
@@ -94,6 +94,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             <EditText
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:hint="End time"
                     android:id="@+id/et_time_end"

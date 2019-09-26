@@ -45,7 +45,7 @@ class CarepetActivity : AppCompatActivity() {
         storageReference = firebaseStorage.reference
         filePathImage = Uri.EMPTY
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = "EDIT PROFILE"
+        supportActionBar!!.title = "CAREPET ORDER"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         val startTime = findViewById<EditText>(R.id.et_time_start)
         val endTime = findViewById<EditText>(R.id.et_time_end)
@@ -112,9 +112,10 @@ class CarepetActivity : AppCompatActivity() {
             val startTime = et_time_start.text.toString()
             val endTime = et_time_end.text.toString()
             val catatan = et_note.text.toString()
+            val phone = et_nomor_telepon.text.toString()
 
             if (name.isNotEmpty() || startTime.isNotEmpty() || endTime.isNotEmpty() || catatan.isNotEmpty()) {
-                addToFirebase(name, startTime, endTime, catatan)
+                addToFirebase(name, startTime, endTime, catatan, phone)
             } else {
                 Toast.makeText(
                     this,
@@ -137,19 +138,25 @@ class CarepetActivity : AppCompatActivity() {
         )
     }
 
-    private fun addToFirebase(name: String, startTime: String, endTime: String, catatan: String) {
+    private fun addToFirebase(name: String, startTime: String, endTime: String, catatan: String, phone: String) {
         val uid = fAuth.currentUser?.uid
-        val storageRef: StorageReference = storageReference.child("imagesPet/$uid.${GetFileExtension(filePathImage)}")
+        val orderid = UUID.randomUUID().toString()
+        val storageRef: StorageReference =
+            storageReference.child("imagesPet/$uid/$orderid.${GetFileExtension(filePathImage)}")
         storageRef.putFile(filePathImage).addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener {
-                dbRef = FirebaseDatabase.getInstance().getReference("order/${fAuth.uid}")
+                dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
                 dbRef.child("image").setValue(it.toString())
                 dbRef.child("name").setValue(name)
+                dbRef.child("userid").setValue(uid)
+                dbRef.child("phone").setValue(phone)
+                dbRef.child("orderid").setValue(orderid)
                 dbRef.child("startTime").setValue(startTime)
                 dbRef.child("endTime").setValue(endTime)
                 dbRef.child("note").setValue(catatan)
                 dbRef.child("status").setValue("In Approve")
             }
+            startActivity(Intent(this, HomeActivity::class.java))
             Toast.makeText(
                 this,
                 "Success Upload",

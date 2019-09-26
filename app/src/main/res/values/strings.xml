@@ -39,4 +39,11 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string-array name="jenis_hewan">
+        <item>Mamalia</item>
+        <item>Serangga</item>
+        <item>Reptil</item>
+    </string-array>
+
 </resources>

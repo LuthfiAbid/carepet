@@ -28,7 +28,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var fAuth: FirebaseAuth
     lateinit var pref: Pref
-    private var destinationAdapter: OrderAdapter? = null
+    private var orderAdapter: OrderAdapter? = null
     private var recyclerView: RecyclerView? = null
     private var list: MutableList<OrderModel> = ArrayList()
     lateinit var dbRef: DatabaseReference
@@ -41,23 +41,26 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         fAuth = FirebaseAuth.getInstance()
         pref = Pref(this)
-        var linearLayoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.VERTICAL, false)
+        var linearLayoutManager = LinearLayoutManager(this)
         recyclerView = findViewById(R.id.recyclerViewOrder)
         recyclerView!!.layoutManager = linearLayoutManager
         recyclerView!!.setHasFixedSize(true)
-        dbRef = FirebaseDatabase.getInstance().getReference("destination")
-        dbRef.orderByChild("startDate").addValueEventListener(object : ValueEventListener {
+
+        dbRef = FirebaseDatabase.getInstance().getReference("order")
+        dbRef.orderByChild("status").equalTo("In Approve").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(data: DataSnapshot) {
                 list = ArrayList()
                 for (dataSnapshot in data.children) {
                     val addDataAll = dataSnapshot.getValue(OrderModel::class.java)
                     addDataAll!!.key = dataSnapshot.key
-                    list.add(addDataAll)
-                    destinationAdapter = OrderAdapter(this@HomeActivity, list)
-                    recyclerView!!.adapter = destinationAdapter
+                    if (addDataAll.userid == fAuth.currentUser?.uid) {
+                        list.add(addDataAll)
+                    }
+                    Log.e("c", addDataAll.name)
                 }
+                orderAdapter = OrderAdapter(this@HomeActivity, list)
+                recyclerView!!.adapter = orderAdapter
             }
-
 
             override fun onCancelled(p0: DatabaseError) {
                 Log.e(
@@ -142,6 +145,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_home -> {
                 // Handle the camera action
+            }
+            R.id.nav_order -> {
+                startActivity(Intent(this, OrderActivity::class.java))
             }
             R.id.nav_profile -> {
                 startActivity(Intent(this, ProfileActivity::class.java))
