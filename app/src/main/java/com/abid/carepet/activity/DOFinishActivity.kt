@@ -1,15 +1,18 @@
 package com.abid.carepet.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.RatingBar
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.abid.carepet.R
 import com.abid.carepet.data.Pref
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_dofinish.*
+import kotlinx.android.synthetic.main.rating_dialog.view.*
 
-class DOFinishActivity : AppCompatActivity(), RatingBar.OnRatingBarChangeListener {
+class DOFinishActivity : AppCompatActivity() {
     lateinit var pref: Pref
     lateinit var dbRef: DatabaseReference
 
@@ -21,10 +24,29 @@ class DOFinishActivity : AppCompatActivity(), RatingBar.OnRatingBarChangeListene
         supportActionBar!!.title = "DETAIL ORDER"
         val orderid = intent.getStringExtra("id")
 
-        dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
-        dbRef.orderByChild("status").equalTo("Finish").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
+        btn_report.setOnClickListener {
+            val intent = Intent(this, ReportActivity::class.java)
+            intent.putExtra("id", orderid)
+            startActivity(intent)
+        }
 
+        btn_rating.setOnClickListener {
+            showDialog()
+        }
+
+        dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid/rating")
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if (!p0.exists()) {
+                    rated.visibility = View.GONE
+                    ratingBar.visibility = View.GONE
+                    btn_rating.visibility = View.VISIBLE
+                } else {
+                    rated.visibility = View.VISIBLE
+                    ratingBar.visibility = View.VISIBLE
+                    ratingBar.rating = p0.value.toString().toFloat()
+                    btn_rating.visibility = View.GONE
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -33,14 +55,47 @@ class DOFinishActivity : AppCompatActivity(), RatingBar.OnRatingBarChangeListene
                 )
             }
         })
-        ratingBar.onRatingBarChangeListener = this
+        dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                orderIdText.text = p0.child("orderid").value.toString()
+                startTimeDetail.text = p0.child("startTime").value.toString()
+                endTimeDetail.text = p0.child("endTime").value.toString()
+            }
 
-        var rating = ratingBar.rating
-
+            override fun onCancelled(p0: DatabaseError) {
+                Log.e(
+                    "TAG_ERROR", p0.message
+                )
+            }
+        })
     }
 
-    override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
+    private fun showDialog() {
+        val builder = AlertDialog.Builder(this@DOFinishActivity)
+        val dialogView = layoutInflater.inflate(R.layout.rating_dialog, null)
 
-//            Toast.makeText(this,"Rating : $p1",Toast.LENGTH_SHORT).show()
+        builder.setView(dialogView)
+            .setPositiveButton("OK") { dialogInterface, i ->
+                var rating = dialogView.dialogRb.rating.toString()
+                var note = dialogView.dialogEt.text.toString()
+                addToFirebase(rating, note)
+            }
+            .setNegativeButton("DISMISS") { dialogInterface, i ->
+
+            }
+            .show()
+    }
+
+    private fun addToFirebase(rating: String, note: String) {
+        val orderid = intent.getStringExtra("id")
+        val dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
+        dbRef.child("rating").setValue(rating)
+        dbRef.child("ratingNote").setValue(note)
+        dbRef.push()
+        startActivity(intent)
+        finish()
     }
 }
+
+

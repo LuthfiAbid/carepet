@@ -25,6 +25,8 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_carepet.*
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class CarepetActivity : AppCompatActivity() {
@@ -49,6 +51,10 @@ class CarepetActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         val startTime = findViewById<EditText>(R.id.et_time_start)
         val endTime = findViewById<EditText>(R.id.et_time_end)
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH.mm")
+        val formatted = current.format(formatter)
+
         imagePet.setOnClickListener {
             when {
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) -> {
@@ -113,9 +119,10 @@ class CarepetActivity : AppCompatActivity() {
             val endTime = et_time_end.text.toString()
             val catatan = et_note.text.toString()
             val phone = et_nomor_telepon.text.toString()
+            val time = formatted.toString()
 
             if (name.isNotEmpty() || startTime.isNotEmpty() || endTime.isNotEmpty() || catatan.isNotEmpty()) {
-                addToFirebase(name, startTime, endTime, catatan, phone)
+                addToFirebase(name, startTime, endTime, catatan, phone, time)
             } else {
                 Toast.makeText(
                     this,
@@ -138,7 +145,14 @@ class CarepetActivity : AppCompatActivity() {
         )
     }
 
-    private fun addToFirebase(name: String, startTime: String, endTime: String, catatan: String, phone: String) {
+    private fun addToFirebase(
+        name: String,
+        startTime: String,
+        endTime: String,
+        catatan: String,
+        phone: String,
+        time: String
+    ) {
         val uid = fAuth.currentUser?.uid
         val orderid = UUID.randomUUID().toString()
         val storageRef: StorageReference =
@@ -154,6 +168,7 @@ class CarepetActivity : AppCompatActivity() {
                 dbRef.child("startTime").setValue(startTime)
                 dbRef.child("endTime").setValue(endTime)
                 dbRef.child("note").setValue(catatan)
+                dbRef.child("time").setValue(time)
                 dbRef.child("status").setValue("In Approve")
             }
             startActivity(Intent(this, HomeActivity::class.java))
