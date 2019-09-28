@@ -104,6 +104,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:paddingLeft="20dp"
                 android:hint="Problems . . ."
+                android:inputType="textMultiLine"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"/>
         <Button

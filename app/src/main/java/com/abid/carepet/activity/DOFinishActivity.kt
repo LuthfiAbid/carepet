@@ -40,10 +40,12 @@ class DOFinishActivity : AppCompatActivity() {
                 if (!p0.exists()) {
                     rated.visibility = View.GONE
                     ratingBar.visibility = View.GONE
+                    textRating.visibility = View.GONE
                     btn_rating.visibility = View.VISIBLE
                 } else {
                     rated.visibility = View.VISIBLE
                     ratingBar.visibility = View.VISIBLE
+                    textRating.visibility = View.VISIBLE
                     ratingBar.rating = p0.value.toString().toFloat()
                     btn_rating.visibility = View.GONE
                 }
@@ -61,6 +63,12 @@ class DOFinishActivity : AppCompatActivity() {
                 orderIdText.text = p0.child("orderid").value.toString()
                 startTimeDetail.text = p0.child("startTime").value.toString()
                 endTimeDetail.text = p0.child("endTime").value.toString()
+                var rating = p0.child("rating").value.toString().toFloat()
+                when (rating) {
+                    in 0..2 -> textRating.text = "Bad"
+                    in 3..4 -> textRating.text = "Good"
+                    else -> textRating.text = "Excellent!"
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {

@@ -15,11 +15,14 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ReportActivity">
+        <activity android:name=".activity.ReportActivity"
+                  android:parentActivityName=".activity.OrderActivity">
         </activity>
-        <activity android:name=".activity.DOFinishActivity">
+        <activity android:name=".activity.DOFinishActivity"
+                  android:parentActivityName=".activity.OrderActivity">
         </activity>
-        <activity android:name=".activity.OrderActivity">
+        <activity android:name=".activity.OrderActivity"
+                  android:parentActivityName=".activity.HomeActivity">
         </activity>
 
         <provider
