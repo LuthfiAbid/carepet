@@ -3,6 +3,7 @@ package com.abid.carepet.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.e
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.abid.carepet.R
@@ -49,18 +50,24 @@ class LoginActivity : AppCompatActivity() {
                 pref.setStatus(true)
                 fAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
-                        FirebaseDatabase.getInstance().getReference("dataUser")
+                        FirebaseDatabase.getInstance().getReference("dataUser/${fAuth.currentUser?.uid}")
                             .addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onCancelled(p0: DatabaseError) {
 
                                 }
-
                                 override fun onDataChange(p0: DataSnapshot) {
-                                    val user = fAuth.currentUser
-                                    updateUI(user)
-                                    Toast.makeText(this@LoginActivity, "Login berhasil!", Toast.LENGTH_SHORT).show()
-                                    onBackPressed()
-                                    finish()
+                                    val role = p0.child("status").value.toString()
+                                    e("ROLEUSER", role)
+                                    if (role == "user") {
+                                        val user = fAuth.currentUser
+                                        updateUI(user)
+                                        Toast.makeText(this@LoginActivity, "Login berhasil!", Toast.LENGTH_SHORT).show()
+                                        onBackPressed()
+                                        finish()
+                                    } else {
+                                        Toast.makeText(this@LoginActivity, "Akun tidak terdaftar!", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
                                 }
                             })
                     }

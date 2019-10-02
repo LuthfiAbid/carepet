@@ -3,7 +3,7 @@ package com.abid.carepet.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
+import android.util.Log.e
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.nav_header_home.*
 import java.util.*
 
@@ -46,7 +47,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView!!.layoutManager = linearLayoutManager
         recyclerView!!.setHasFixedSize(true)
 
-        dbRef = FirebaseDatabase.getInstance().getReference("order")
+        dbRef = FirebaseDatabase.getInstance().getReference("order/")
         dbRef.orderByChild("status").equalTo("In Approve").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(data: DataSnapshot) {
                 list = ArrayList()
@@ -54,6 +55,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val addDataAll = dataSnapshot.getValue(OrderModel::class.java)
                     addDataAll!!.key = dataSnapshot.key
                     if (addDataAll.userid == fAuth.currentUser?.uid) {
+                        val count = data.childrenCount.toString().toInt()
+                        if (count > 0) {
+                            fab.hide()
+                        } else {
+                            fab.show()
+                        }
+                        e("COUNTCHILD", count.toString())
                         list.add(addDataAll)
                     }
                     Log.e("c", addDataAll.name)
@@ -61,7 +69,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 orderAdapter = OrderAdapter(this@HomeActivity, list)
                 recyclerView!!.adapter = orderAdapter
             }
-
             override fun onCancelled(p0: DatabaseError) {
                 Log.e(
                     "TAG_ERROR", p0.message
@@ -74,7 +81,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 override fun onDataChange(p0: DataSnapshot) {
                     textViewUser.text = p0.value.toString()
                 }
-
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
@@ -95,7 +101,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             .into(imageViewHome)
                     }
                 }
-
                 override fun onCancelled(p0: DatabaseError) {
                 }
             })
@@ -111,7 +116,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         navView.setNavigationItemSelectedListener(this)
     }
 
@@ -124,27 +128,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.home, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
-                // Handle the camera action
+                startActivity(Intent(this, HomeActivity::class.java))
             }
             R.id.nav_order -> {
                 startActivity(Intent(this, OrderActivity::class.java))
