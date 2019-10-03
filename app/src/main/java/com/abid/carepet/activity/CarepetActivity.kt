@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import android.widget.Toast
@@ -122,6 +123,8 @@ class CarepetActivity : AppCompatActivity() {
             val time = formatted.toString()
 
             if (name.isNotEmpty() || startTime.isNotEmpty() || endTime.isNotEmpty() || catatan.isNotEmpty()) {
+                btn_submit_order.visibility = View.GONE
+                progesrBar.visibility = View.VISIBLE
                 addToFirebase(name, startTime, endTime, catatan, phone, time)
             } else {
                 Toast.makeText(
@@ -129,6 +132,8 @@ class CarepetActivity : AppCompatActivity() {
                     "Fill Data",
                     Toast.LENGTH_SHORT
                 ).show()
+                btn_submit_order.visibility = View.VISIBLE
+                progesrBar.visibility = View.GONE
             }
         }
     }
@@ -170,14 +175,17 @@ class CarepetActivity : AppCompatActivity() {
                 dbRef.child("note").setValue(catatan)
                 dbRef.child("time").setValue(time)
                 dbRef.child("status").setValue("In Approve")
+
             }
             startActivity(Intent(this, HomeActivity::class.java))
+            finish()
             Toast.makeText(
                 this,
                 "Success Upload",
                 Toast.LENGTH_SHORT
             ).show()
         }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

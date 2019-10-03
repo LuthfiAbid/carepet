@@ -36,7 +36,8 @@
             </meta-data>
         </provider>
 
-        <activity android:name=".activity.CarepetActivity">
+        <activity android:name=".activity.CarepetActivity"
+                  android:parentActivityName=".activity.HomeActivity">
         </activity>
         <activity
                 android:name=".activity.EditProfileActivity"

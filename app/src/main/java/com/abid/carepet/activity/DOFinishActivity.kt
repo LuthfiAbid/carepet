@@ -35,7 +35,7 @@ class DOFinishActivity : AppCompatActivity() {
         }
 
         dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid/rating")
-        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 if (!p0.exists()) {
                     rated.visibility = View.GONE
@@ -58,16 +58,20 @@ class DOFinishActivity : AppCompatActivity() {
             }
         })
         dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
-        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 orderIdText.text = p0.child("orderid").value.toString()
                 startTimeDetail.text = p0.child("startTime").value.toString()
                 endTimeDetail.text = p0.child("endTime").value.toString()
-                var rating = p0.child("rating").value.toString().toFloat()
-                when (rating) {
-                    in 0..2 -> textRating.text = "Bad"
-                    in 3..4 -> textRating.text = "Good"
-                    else -> textRating.text = "Excellent!"
+                if (p0.child("rating").exists()) {
+                    var rating = p0.child("rating").value.toString().toFloat()
+                    when (rating) {
+                        in 0..2 -> textRating.text = "Bad"
+                        in 3..4 -> textRating.text = "Good"
+                        else -> textRating.text = "Excellent!"
+                    }
+                } else {
+
                 }
             }
 
@@ -100,9 +104,8 @@ class DOFinishActivity : AppCompatActivity() {
         val dbRef = FirebaseDatabase.getInstance().getReference("order/$orderid")
         dbRef.child("rating").setValue(rating)
         dbRef.child("ratingNote").setValue(note)
-        dbRef.push()
-        startActivity(intent)
-        finish()
+//        startActivity(intent)
+//        finish()
     }
 }
 

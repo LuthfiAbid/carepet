@@ -2,8 +2,8 @@ package com.abid.carepet.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.e
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.abid.carepet.R
@@ -30,16 +30,11 @@ class LoginActivity : AppCompatActivity() {
         preferenceHelper = PrefSlider(this)
         fAuth = FirebaseAuth.getInstance()
 
+        if (pref.cekStatus()!!) {
+            startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+            finish()
+        } else {
 
-        if (!pref.cekStatus()!!) {
-        } else {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-        }
-        if (fAuth.currentUser != null) {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-        } else {
         }
 
         btn_login.setOnClickListener {
@@ -47,7 +42,6 @@ class LoginActivity : AppCompatActivity() {
             var password = et_password_login.text.toString()
 
             if (email.isNotEmpty() || password.isNotEmpty()) {
-                pref.setStatus(true)
                 fAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
                         FirebaseDatabase.getInstance().getReference("dataUser/${fAuth.currentUser?.uid}")
@@ -55,17 +49,25 @@ class LoginActivity : AppCompatActivity() {
                                 override fun onCancelled(p0: DatabaseError) {
 
                                 }
+
                                 override fun onDataChange(p0: DataSnapshot) {
                                     val role = p0.child("status").value.toString()
                                     e("ROLEUSER", role)
                                     if (role == "user") {
+                                        pref.setStatus(true)
+                                        btn_login.visibility = View.GONE
+                                        progresbar_login.visibility = View.VISIBLE
                                         val user = fAuth.currentUser
                                         updateUI(user)
                                         Toast.makeText(this@LoginActivity, "Login berhasil!", Toast.LENGTH_SHORT).show()
-                                        onBackPressed()
                                         finish()
+
                                     } else {
-                                        Toast.makeText(this@LoginActivity, "Akun tidak terdaftar!", Toast.LENGTH_SHORT)
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Username atau Password salah!",
+                                            Toast.LENGTH_SHORT
+                                        )
                                             .show()
                                     }
                                 }
@@ -79,9 +81,11 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                     }
             } else {
+                btn_login.visibility = View.VISIBLE
+                progresbar_login.visibility = View.GONE
                 Toast.makeText(
                     this,
-                    "Login Gagal!",
+                    "Harap isi kolom yang kosong!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -95,10 +99,11 @@ class LoginActivity : AppCompatActivity() {
 
     fun updateUI(user: FirebaseUser?) {
         if (user != null) {
+            finish()
             pref.saveUID(user.uid) //save uid sharedpreferences
             startActivity(Intent(this, HomeActivity::class.java))
         } else {
-            Log.e("TAG_ERROR", "user tidak ada")
+            e("TAG_ERROR", "user tidak ada")
         }
     }
 }

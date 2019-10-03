@@ -48,6 +48,11 @@
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
+    <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progresbar_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     <Button
             android:id="@+id/btn_login"
             android:layout_marginBottom="20dp"

@@ -48,39 +48,44 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView!!.setHasFixedSize(true)
 
         dbRef = FirebaseDatabase.getInstance().getReference("order/")
-        dbRef.orderByChild("status").equalTo("In Approve").addValueEventListener(object : ValueEventListener {
+        dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(data: DataSnapshot) {
                 list = ArrayList()
                 for (dataSnapshot in data.children) {
                     val addDataAll = dataSnapshot.getValue(OrderModel::class.java)
                     addDataAll!!.key = dataSnapshot.key
-                    if (addDataAll.userid == fAuth.currentUser?.uid) {
-                        val count = data.childrenCount.toString().toInt()
-                        if (count > 0) {
-                            fab.hide()
-                        } else {
-                            fab.show()
+                    if (dataSnapshot.child("status").value == "Finish" || dataSnapshot.child("status").value == "Rejected") {
+
+                    } else {
+                        if (addDataAll.userid == fAuth.currentUser?.uid) {
+                            list.add(addDataAll)
+                            val count = data.childrenCount.toString()
+                            if (count > "0") {
+                                fab.hide()
+                            } else if (count < "0") {
+                                fab.show()
+                            }
+                            e("COUNTCHILD", count.toString())
                         }
-                        e("COUNTCHILD", count.toString())
-                        list.add(addDataAll)
                     }
-                    Log.e("c", addDataAll.name)
+                    e("c", addDataAll.name)
                 }
                 orderAdapter = OrderAdapter(this@HomeActivity, list)
                 recyclerView!!.adapter = orderAdapter
             }
+
             override fun onCancelled(p0: DatabaseError) {
                 Log.e(
                     "TAG_ERROR", p0.message
                 )
             }
         })
-
         FirebaseDatabase.getInstance().getReference("dataUser/${fAuth.uid}")
             .child("name").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
                     textViewUser.text = p0.value.toString()
                 }
+
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
@@ -101,6 +106,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             .into(imageViewHome)
                     }
                 }
+
                 override fun onCancelled(p0: DatabaseError) {
                 }
             })
@@ -148,6 +154,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         this, LoginActivity::class.java
                     )
                 )
+                finish()
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

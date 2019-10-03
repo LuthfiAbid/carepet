@@ -176,6 +176,7 @@ class EditProfileActivity : AppCompatActivity() {
             dbRef.child("dataUser/$uidUser/name").setValue(eteditnamao)
             dbRef.child("dataUser/$uidUser/phone").setValue(eto)
             Toast.makeText(this, "Sukses", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 }
